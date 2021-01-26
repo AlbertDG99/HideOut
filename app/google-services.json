@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "582937298110",
+    "project_id": "hideout-d08d6",
+    "storage_bucket": "hideout-d08d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582937298110:android:1fb480996f4db252118aef",
+        "android_client_info": {
+          "package_name": "com.example.hideout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582937298110-fl29spb3mikslrjusic4merb9kqamoft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEpyamRcfigSjXGGH77KQ3bMoe4w9-zW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582937298110-fl29spb3mikslrjusic4merb9kqamoft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
