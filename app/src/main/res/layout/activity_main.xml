@@ -12,4 +12,13 @@
         android:layout_centerInParent="true"
         android:text="GET LOCATION"
         tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="aBRIR MENU PRINCIPAL"
+        tools:layout_editor_absoluteX="122dp"
+        tools:layout_editor_absoluteY="197dp"
+        android:onClick="abrirMenu"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

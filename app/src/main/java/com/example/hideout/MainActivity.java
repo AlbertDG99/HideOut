@@ -2,10 +2,12 @@ package com.example.hideout;
 
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -111,5 +113,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         locationTrack.stopListener();
+    }
+
+    public void abrirMenu(View view){
+        Intent intent = new Intent(this, MenuPrincipal.class);
+        startActivity(intent);
     }
 }
