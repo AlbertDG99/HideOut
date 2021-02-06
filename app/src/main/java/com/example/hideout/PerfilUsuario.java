@@ -104,6 +104,22 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                                                             "Email actualizado con éxito", Toast.LENGTH_SHORT);
 
                                             toast.show();
+                                        }else{
+
+                                            if(validacionMail(textUserMail.getText().toString())){
+                                                Toast toast =
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "Ese email ya está registrado", Toast.LENGTH_SHORT);
+
+                                                toast.show();
+                                            }else{
+                                                Toast toast =
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "Formato de email erróneo", Toast.LENGTH_SHORT);
+
+                                                toast.show();
+                                            }
+
                                         }
                                     }
                                 });
@@ -132,6 +148,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                     toast.show();
                 }else{
                     if(!textNewPass.getText().toString().equals(textRepNewPass.getText().toString())){
+
                         Toast toast =
                                 Toast.makeText(getApplicationContext(),
                                         "Las contraseñas no coinciden", Toast.LENGTH_SHORT);
@@ -173,5 +190,16 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
         }
 
+    }
+
+    /**
+     * Método de validacion de email mediante expresionas regulares (palabra + @ + palabra + . + palabra)
+     *
+     * @param email email a comprobar
+     * @return true si es válido y false si no lo es
+     */
+    static boolean validacionMail(String email) {
+        String expReg = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(expReg);
     }
 }
