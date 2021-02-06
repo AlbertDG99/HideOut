@@ -3,8 +3,12 @@ package com.example.hideout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +27,6 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_menu_principal);
 
         tNombre = findViewById(R.id.tNombre);
-
         mAuth = FirebaseAuth.getInstance();
 
         user = mAuth.getCurrentUser();
@@ -31,6 +34,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         comprobarLogin();
 
         findViewById(R.id.buttonSalir).setOnClickListener(this);
+        findViewById(R.id.imgSettings).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
     }
 
@@ -56,20 +60,32 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.imgSettings:
-
-                Intent i = new Intent(this, PerfilUsuario.class);
-                startActivity(i);
-
+                PopupMenu settings = new PopupMenu(this, v);
+                settings.getMenuInflater().inflate(R.menu.settings_popup, settings.getMenu());
+                settings.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.itemPerfil:
+                                startActivity(new Intent(MenuPrincipal.this, PerfilUsuario.class));
+                                break;
+                            case R.id.itemCSesion:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                settings.show();
                 break;
 
         }
 
     }
 
-    public void comprobarLogin(){
-        if(user != null){
+    public void comprobarLogin() {
+        if (user != null) {
             tNombre.setText(user.getDisplayName());
-        }else{
+        } else {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
