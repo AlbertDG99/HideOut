@@ -15,11 +15,13 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int RC_SIGN_IN = 7679;
 
     List<AuthUI.IdpConfig> providers;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +32,23 @@ public class MainActivity extends AppCompatActivity {
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
-        showSignInOptions();
+        mAuth = FirebaseAuth.getInstance();
+
+        currentUser = mAuth.getCurrentUser();
+
+        if(currentUser != null){
+            Intent intent = new Intent(this, MenuPrincipal.class);
+            startActivity(intent);
+        }
+
+        findViewById(R.id.buttonIniciar).setOnClickListener(this);
+        findViewById(R.id.buttonRegistro).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
 
     }
 
@@ -53,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                if(user != null){
+                    Intent intent = new Intent(this, MenuPrincipal.class);
+                    startActivity(intent);
+                }
+
                 // ...
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -63,8 +87,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void abrirMenu(View view){
-        Intent intent = new Intent(this, MenuPrincipal.class);
-        startActivity(intent);
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            //botón iniciar sesion
+            case R.id.buttonIniciar:
+
+                showSignInOptions();
+
+                break;
+
+            //botón registro
+            //se guarda la elección y se llama el método "resultado" con la elección como parámetro
+            case R.id.buttonRegistro:
+
+
+                break;
+
+        }
+
     }
 }
