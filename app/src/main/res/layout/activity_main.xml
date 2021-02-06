@@ -6,13 +6,18 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:padding="25dp"
     tools:context=".MainActivity">
 
-
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/hideoutalpha" />
 
     <Button
         android:id="@+id/buttonIniciar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="INICIAR SESIÓN"
         tools:layout_editor_absoluteX="122dp"
@@ -20,7 +25,7 @@
 
     <Button
         android:id="@+id/buttonRegistro"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="REGISTRARSE"
         tools:layout_editor_absoluteX="122dp"

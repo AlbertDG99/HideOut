@@ -54,8 +54,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
             textUserName.setText(user.getDisplayName());
             textUserMail.setText(user.getEmail());
         } else { //sino, lo reenviamos al inicio
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            finish();
         }
 
         buttonEditar.setOnClickListener(this);
@@ -168,8 +167,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
             //botón atrás
             case R.id.imageBack:
 
-                Intent intent = new Intent(this, MenuPrincipal.class);
-                startActivity(intent);
+                finish();
 
                 break;
 
