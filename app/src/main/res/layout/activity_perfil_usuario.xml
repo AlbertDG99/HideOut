@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/imageBack"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_gravity="right"
         android:layout_marginBottom="25dp"
         app:srcCompat="@drawable/backarrowb" />
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Nombre" />
+            android:hint="Nombre" />
 
         <EditText
             android:id="@+id/textUserMail"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
-            android:text="Email" />
+            android:hint="Email" />
 
         <Button
             android:id="@+id/buttonEditar"
@@ -73,8 +73,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:text="Nueva Contraseña" />
+            android:inputType="textPassword"
+            android:hint="Nueva Contraseña" />
 
 
         <EditText
@@ -82,14 +82,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textEmailAddress"
-            android:text="Repita la Contraseña" />
+            android:inputType="textPassword"
+            android:hint="Repita la Contraseña" />
 
         <Button
             android:id="@+id/buttonChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CAMBIAR" />
+            android:text="CAMBIAR CONTRASEÑA" />
 
     </LinearLayout>
 

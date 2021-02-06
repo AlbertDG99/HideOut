@@ -45,13 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.buttonRegistro).setOnClickListener(this);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-
-    }
-
     private void showSignInOptions(){
         startActivityForResult(
                 AuthUI.getInstance()
