@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".PerfilUsuario"></activity>
+        <activity android:name=".CrearReto"></activity>
+        <activity android:name=".PerfilUsuario" />
         <activity android:name=".MenuPrincipal" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -22,5 +23,6 @@
             </intent-filter>
         </activity>
     </application>
-
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 </manifest>

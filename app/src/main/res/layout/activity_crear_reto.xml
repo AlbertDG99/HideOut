@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CrearReto"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/imageBack"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="right"
+        android:layout_marginBottom="25dp"
+        app:srcCompat="@drawable/backarrowb" />
+
+    <ImageView
+        android:id="@+id/imgReto"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3" />
+
+    <Button
+        android:id="@+id/bSubirFotoReto"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:text="SUBIR FOTO" />
+
+
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:inputType="textMultiLine"
+        android:layout_weight="1"
+        android:hint="Añade aqui una pista para tus adversarios :P" />
+
+    <Button
+        android:id="@+id/bCrearReto"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:text="CREAR RETO!" />
+
+
+</LinearLayout>

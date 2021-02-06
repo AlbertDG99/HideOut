@@ -32,9 +32,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         user = mAuth.getCurrentUser();
 
         comprobarLogin();
-
-        findViewById(R.id.buttonSalir).setOnClickListener(this);
-        findViewById(R.id.imgSettings).setOnClickListener(this);
+findViewById(R.id.bCrear).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
     }
 
@@ -48,15 +46,8 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            //botón cerrar sesion
-            case R.id.buttonSalir:
-
-                FirebaseAuth.getInstance().signOut();
-
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-
+            case R.id.bCrear:
+                startActivity(new Intent(MenuPrincipal.this, CrearReto.class));
                 break;
 
             case R.id.imgSettings:
@@ -69,7 +60,11 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
                             case R.id.itemPerfil:
                                 startActivity(new Intent(MenuPrincipal.this, PerfilUsuario.class));
                                 break;
+                            //botón cerrar sesion
                             case R.id.itemCSesion:
+                                FirebaseAuth.getInstance().signOut();
+
+                                finish();
                                 break;
                         }
                         return false;
