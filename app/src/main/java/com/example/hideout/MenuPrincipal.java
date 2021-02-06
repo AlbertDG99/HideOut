@@ -13,28 +13,33 @@ import com.google.firebase.auth.FirebaseUser;
 public class MenuPrincipal extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
+    private TextView tNombre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
-        TextView tNombre = findViewById(R.id.tNombre);
+        tNombre = findViewById(R.id.tNombre);
 
         mAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
 
-        if(user != null){
-            tNombre.setText(user.getDisplayName());
-        }else{
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
+        comprobarLogin();
 
         findViewById(R.id.buttonSalir).setOnClickListener(this);
+        findViewById(R.id.imgSettings).setOnClickListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        comprobarLogin();
+    }
 
     @Override
     public void onClick(View v) {
@@ -50,6 +55,23 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
 
                 break;
 
+            case R.id.imgSettings:
+
+                Intent i = new Intent(this, PerfilUsuario.class);
+                startActivity(i);
+
+                break;
+
+        }
+
+    }
+
+    public void comprobarLogin(){
+        if(user != null){
+            tNombre.setText(user.getDisplayName());
+        }else{
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }
