@@ -2,8 +2,10 @@ package com.example.hideout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -37,6 +39,8 @@ public class CrearReto extends AppCompatActivity  implements View.OnClickListene
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            LocationTrack coordenadas = new LocationTrack(this);
+            System.out.println("Las coordenadas son: "+coordenadas.getLatitude());
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             ImageView previewImagen = findViewById(R.id.imgReto);
