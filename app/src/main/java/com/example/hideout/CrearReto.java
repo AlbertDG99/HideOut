@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 public class CrearReto extends AppCompatActivity  implements View.OnClickListener {
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,14 +22,26 @@ public class CrearReto extends AppCompatActivity  implements View.OnClickListene
 
 
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
+        findViewById(R.id.imageBack).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        dispatchTakePictureIntent();
-    }
+        switch (v.getId()) {
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+            case R.id.bSubirFotoReto:
+
+                dispatchTakePictureIntent();
+                break;
+
+            //botón atrás
+            case R.id.imageBack:
+
+                finish();
+
+                break;
+        }
+    }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
