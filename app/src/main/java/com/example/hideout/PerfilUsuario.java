@@ -1,5 +1,6 @@
 package com.example.hideout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,6 +61,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
         buttonEditar.setOnClickListener(this);
         findViewById(R.id.buttonChange).setOnClickListener(this);
+        findViewById(R.id.buttonDelete).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
 
     }
@@ -177,7 +180,58 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                 }
 
+            //botón eliminar perfil
+            case R.id.buttonDelete:
 
+                //creamos el dialog con el que pdiremos la confirmacion del usuario
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setMessage("Se borrará el perfil actual. Esta acción no se puede deshacer ¿Está de acuerdo?")
+                        .setPositiveButton("Eliminar perfil",  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                //se elimina el perfil del usuario
+                                user.delete()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(PerfilUsuario.this);
+                                                    //informamos al usuario con un dialog del exito
+                                                    builder.setTitle("Información");
+                                                    builder.setMessage("Perfil eliminado con éxito.");
+                                                    builder.setCancelable(false);
+                                                    builder.setPositiveButton("Aceptar",
+                                                            new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    // redirigimos a la pantalla principal
+                                                                    FirebaseUser user = null;
+                                                                    finish();
+                                                                }
+                                                    });
+                                                    builder.setNegativeButton("",
+                                                            new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    // redirigimos a la pantalla principal
+                                                                    FirebaseUser user = null;
+                                                                    finish();
+                                                                }
+                                                            });
+                                                    AlertDialog infoDialog = builder.create();
+                                                    infoDialog.show();
+                                                }
+                                            }
+                                        });
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
 
                 break;
 

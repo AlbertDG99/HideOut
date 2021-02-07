@@ -29,9 +29,8 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         tNombre = findViewById(R.id.tNombre);
         mAuth = FirebaseAuth.getInstance();
 
-        user = mAuth.getCurrentUser();
-
         comprobarLogin();
+
 findViewById(R.id.bCrear).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
     }
@@ -78,11 +77,13 @@ findViewById(R.id.bCrear).setOnClickListener(this);
     }
 
     public void comprobarLogin() {
+
+        user = mAuth.getCurrentUser();
+
         if (user != null) {
             tNombre.setText(user.getDisplayName());
         } else {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
 }
