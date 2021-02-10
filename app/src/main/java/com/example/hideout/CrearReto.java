@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,7 +21,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class CrearReto extends AppCompatActivity implements View.OnClickListener {
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    EditText pista = findViewById(R.id.eTPista);
+    EditText pista;
     double latitud;
     double longitud;
 
@@ -31,6 +32,8 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
+        findViewById(R.id.bCrearReto).setOnClickListener(this);
+        pista = findViewById(R.id.eTPista);
     }
 
     @Override
