@@ -1,18 +1,17 @@
 package com.example.hideout;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageReference;
 
 public class MenuPrincipal extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,8 +30,9 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
 
         comprobarLogin();
 
-findViewById(R.id.bCrear).setOnClickListener(this);
+        findViewById(R.id.bCrear).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
+
     }
 
     @Override
@@ -85,6 +85,8 @@ findViewById(R.id.bCrear).setOnClickListener(this);
             finish();
         }
     }
+
+
 }
 
 
