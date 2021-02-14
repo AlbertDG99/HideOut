@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
-                        .setLogo(R.drawable.hideoutalpha)
+                        .setLogo(R.drawable.hideoutblue)
                         .setTheme(R.style.Theme_AppCompat_Light_NoActionBar)
                         .build(),
                 RC_SIGN_IN);
@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (user != null) {
             Intent i = new Intent(this, MenuPrincipal.class);
             startActivity(i);
+
+            finish();
         }
     }
 }

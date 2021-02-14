@@ -7,28 +7,35 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="25dp"
+    android:background="@drawable/grandiente"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/hideoutalpha" />
+        app:srcCompat="@drawable/hideoutblue" />
 
     <Button
         android:id="@+id/buttonIniciar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Boton"
+        android:padding="25dp"
         android:text="INICIAR SESIÓN"
         tools:layout_editor_absoluteX="122dp"
         tools:layout_editor_absoluteY="197dp"/>
 
     <Button
         android:id="@+id/buttonRegistro"
+        style="@style/Boton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="25dp"
+        android:backgroundTint="@color/colorAccent"
+        android:textColor="@color/colorPrimary"
         android:text="REGISTRARSE"
         tools:layout_editor_absoluteX="122dp"
-        tools:layout_editor_absoluteY="197dp"/>
+        tools:layout_editor_absoluteY="197dp" />
 
 </LinearLayout>

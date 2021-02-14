@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="25dp"
+    android:background="@drawable/grandiente"
     tools:context=".Registro">
 
     <ImageView
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="30dp">
 
         <TextView
             android:id="@+id/textView"
@@ -29,6 +30,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingBottom="20dp"
+            style="@style/Font"
+            android:textSize="25dp"
             android:text="Crear una nueva cuenta en HideOut" />
 
         <EditText
@@ -37,6 +40,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
+            style="@style/Input"
             android:hint="Nombre" />
 
         <EditText
@@ -45,6 +49,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textEmailAddress"
+            style="@style/Input"
             android:hint="Email" />
 
         <LinearLayout
@@ -60,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword"
+                style="@style/Input"
                 android:hint="Contraseña" />
 
 
@@ -69,15 +75,17 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword"
+                style="@style/Input"
                 android:hint="Repita la Contraseña" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/buttonNewRegistro"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            style="@style/Boton"
             android:text="REGISTRARSE" />
 
     </LinearLayout>
