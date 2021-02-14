@@ -11,10 +11,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -123,7 +125,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                System.out.println("heey"+ex);
+                System.out.println(ex);
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -134,6 +136,38 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            setPic();
+        }
+    }
+    private void setPic() {
+        ImageView imageView = findViewById(R.id.imgReto);
+        // Get the dimensions of the View
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+        imageView.setImageBitmap(bitmap);
     }
 
     private void galleryAddPic() {
