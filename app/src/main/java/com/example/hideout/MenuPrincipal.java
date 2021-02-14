@@ -79,7 +79,6 @@ findViewById(R.id.bCrear).setOnClickListener(this);
     public void comprobarLogin() {
 
         user = mAuth.getCurrentUser();
-
         if (user != null) {
             tNombre.setText(user.getDisplayName());
         } else {
@@ -87,3 +86,5 @@ findViewById(R.id.bCrear).setOnClickListener(this);
         }
     }
 }
+
+
