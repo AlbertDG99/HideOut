@@ -20,6 +20,7 @@
         android:id="@+id/imgReto"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:src="@drawable/imgphoto"
         android:layout_weight="3" />
 
     <Button

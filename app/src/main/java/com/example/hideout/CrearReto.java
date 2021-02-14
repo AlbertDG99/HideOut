@@ -1,5 +1,6 @@
 package com.example.hideout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
@@ -12,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,13 +22,20 @@ import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -51,6 +60,9 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     double longitud;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private String currentPhotoPath;
 
 
     @Override
@@ -59,10 +71,11 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_crear_reto);
 
         mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com");
 
+        storageRef = storage.getReference();
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
-
 
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
@@ -90,10 +103,10 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
                 myRef.push().setValue(currentPhotoPath);
+                uploadImage();
                 break;
         }
     }
-    String currentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -176,6 +189,42 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
+    }
+
+    private void uploadImage(){
+        StorageReference imgRef = storageRef.child(currentPhotoPath);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = imgRef.putBytes(data);
+
+        Uri file = Uri.fromFile(new File(currentPhotoPath));
+        StorageReference riversRef = storageRef.child("imagenes/"+file.getLastPathSegment());
+        uploadTask = riversRef.putFile(file);
+
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Toast toast =
+                        Toast.makeText(getApplicationContext(),
+                                "FRACASO", Toast.LENGTH_SHORT);
+
+                toast.show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                Toast toast =
+                        Toast.makeText(getApplicationContext(),
+                                "EXITO", Toast.LENGTH_SHORT);
+
+                toast.show();
+            }
+        });
     }
 
 
