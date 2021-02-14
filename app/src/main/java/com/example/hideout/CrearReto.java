@@ -1,12 +1,14 @@
 package com.example.hideout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
@@ -44,18 +46,8 @@ import java.util.Date;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-
-class Reto {
-    private String idUsu;
-    private String nomUsu;
-    private double longitud;
-    private double latitud;
-    private String pista;
-}
-
 public class CrearReto extends AppCompatActivity implements View.OnClickListener {
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    EditText pista;
     double latitud;
     double longitud;
     private FirebaseAuth mAuth;
@@ -63,6 +55,9 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private String currentPhotoPath;
+    private LocationTrack locationTrack;
+
+    private EditText eTPista;
 
 
     @Override
@@ -71,16 +66,20 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_crear_reto);
 
         mAuth = FirebaseAuth.getInstance();
+        //obtenemos el usuario
+        user = mAuth.getCurrentUser();
         storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com");
 
         storageRef = storage.getReference();
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
+        eTPista = findViewById(R.id.eTPista);
+        locationTrack = new LocationTrack(this);
+
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
         findViewById(R.id.bCrearReto).setOnClickListener(this);
-        pista = findViewById(R.id.eTPista);
     }
 
     @Override
@@ -100,10 +99,41 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 break;
 
             case R.id.bCrearReto:
+
+                Reto reto = new Reto();
+                reto.setIdUsu(user.getUid());
+                reto.setNomUsu(user.getDisplayName());
+                reto.setPista(eTPista.getText().toString());
+                reto.setLatitud(latitud);
+                reto.setLongitud(longitud);
+                reto.setImagen(currentPhotoPath);
+
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("message");
-                myRef.push().setValue(currentPhotoPath);
+                myRef.push().setValue(reto);
                 uploadImage();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
+                //informamos al usuario con un dialog del exito
+                builder.setTitle("Información");
+                builder.setMessage("¡Reto creado con éxito!");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Aceptar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // redirigimos a la pantalla principal
+                                finish();
+                            }
+                        });
+                builder.setNegativeButton("",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // redirigimos a la pantalla principal
+                                finish();
+                            }
+                        });
+                AlertDialog infoDialog = builder.create();
+                infoDialog.show();
                 break;
         }
     }
@@ -154,6 +184,10 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
+            latitud = locationTrack.getLatitude();
+            longitud = locationTrack.getLongitude();
+
             setPic();
         }
     }
