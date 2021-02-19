@@ -19,8 +19,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -48,9 +50,9 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     private StorageReference storageRef;
     private String currentPhotoPath;
     private LocationTrack locationTrack;
-
+    private String urlImagen;
     private EditText eTPista;
-
+private Reto reto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Bitmap bmp=BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 ImageView img = findViewById(R.id.caca);
                 img.setImageBitmap(bmp);
             }
@@ -110,17 +112,13 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
             case R.id.bCrearReto:
 
                 if(validar()){
-                    Reto reto = new Reto();
+                    reto = new Reto();
                     reto.setIdUsu(user.getUid());
                     reto.setNomUsu(user.getDisplayName());
                     reto.setPista(eTPista.getText().toString());
                     reto.setLatitud(latitud);
                     reto.setLongitud(longitud);
                     reto.setImagen(currentPhotoPath);
-
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("message");
-                    myRef.push().setValue(reto);
                     uploadImage();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
@@ -203,6 +201,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
             setPic();
         }
     }
+
     private void setPic() {
         ImageView imageView = findViewById(R.id.imgReto);
         // Get the dimensions of the View
@@ -217,7 +216,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         int photoH = bmOptions.outHeight;
 
         // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
         // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
@@ -237,7 +236,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         this.sendBroadcast(mediaScanIntent);
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         StorageReference imgRef = storageRef.child(currentPhotoPath);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -245,7 +244,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         UploadTask uploadTask = imgRef.putBytes(data);
 
         Uri file = Uri.fromFile(new File(currentPhotoPath));
-        StorageReference riversRef = storageRef.child("imagenes/"+file.getLastPathSegment());
+        final StorageReference riversRef = storageRef.child("imagenes/"+file.getLastPathSegment());
         uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
@@ -269,8 +268,22 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                                 "EXITO", Toast.LENGTH_SHORT);
 
                 toast.show();
+                riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                {
+                    @Override
+                    public void onSuccess(Uri downloadUrl)
+                    {
+                    urlImagen= downloadUrl.toString();
+                        reto.setImagen(urlImagen);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("Retos");
+                        myRef.push().setValue(reto);
+
+                    }
+                });
             }
         });
+
     }
 
     private boolean validar() {
