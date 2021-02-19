@@ -52,7 +52,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     private LocationTrack locationTrack;
     private String urlImagen;
     private EditText eTPista;
-private Reto reto;
+    private Reto reto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,8 @@ private Reto reto;
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
         findViewById(R.id.bCrearReto).setOnClickListener(this);
+
+        /*
         StorageReference gsReference = storage.getReferenceFromUrl("gs://hideout-d08d6.appspot.com/imagenes/JPEG_20210214_213750_5124400265805042627.jpg");
 
         final long ONE_MEGABYTE = 1024 * 1024;
@@ -81,7 +83,7 @@ private Reto reto;
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                ImageView img = findViewById(R.id.caca);
+                ImageView img = findViewById(R.id.image);
                 img.setImageBitmap(bmp);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -89,7 +91,7 @@ private Reto reto;
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
             }
-        });
+        });*/
 
     }
 
@@ -112,14 +114,16 @@ private Reto reto;
             case R.id.bCrearReto:
 
                 if(validar()){
-                    reto = new Reto();
-                    reto.setIdUsu(user.getUid());
-                    reto.setNomUsu(user.getDisplayName());
-                    reto.setPista(eTPista.getText().toString());
-                    reto.setLatitud(latitud);
-                    reto.setLongitud(longitud);
-                    reto.setImagen(currentPhotoPath);
-                    uploadImage();
+                    try{
+                        reto = new Reto();
+                        reto.setIdUsu(user.getUid());
+                        reto.setNomUsu(user.getDisplayName());
+                        reto.setPista(eTPista.getText().toString());
+                        reto.setLatitud(latitud);
+                        reto.setLongitud(longitud);
+                        reto.setImagen(currentPhotoPath);
+                        uploadImage();
+                    }catch(IOException e){}
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
                     //informamos al usuario con un dialog del exito
@@ -198,10 +202,11 @@ private Reto reto;
             latitud = locationTrack.getLatitude();
             longitud = locationTrack.getLongitude();
 
-            setPic();
+            //setPic();
         }
     }
 
+    /*
     private void setPic() {
         ImageView imageView = findViewById(R.id.imgReto);
         // Get the dimensions of the View
@@ -228,6 +233,8 @@ private Reto reto;
         imageView.setImageBitmap(bitmap);
     }
 
+     */
+
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
@@ -236,10 +243,12 @@ private Reto reto;
         this.sendBroadcast(mediaScanIntent);
     }
 
-    private void uploadImage() {
+    private void uploadImage() throws IOException {
         StorageReference imgRef = storageRef.child(currentPhotoPath);
 
+        Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(currentPhotoPath)));//
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);//
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = imgRef.putBytes(data);
 
@@ -252,22 +261,24 @@ private Reto reto;
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
+                /*
                 Toast toast =
                         Toast.makeText(getApplicationContext(),
                                 "FRACASO", Toast.LENGTH_SHORT);
 
-                toast.show();
+                toast.show();*/
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
+                /*
                 Toast toast =
                         Toast.makeText(getApplicationContext(),
                                 "EXITO", Toast.LENGTH_SHORT);
 
-                toast.show();
+                toast.show();*/
                 riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
                 {
                     @Override
@@ -283,7 +294,6 @@ private Reto reto;
                 });
             }
         });
-
     }
 
     private boolean validar() {

@@ -20,11 +20,6 @@
         app:srcCompat="@drawable/backarrowb" />
 
     <ImageView
-        android:id="@+id/caca"
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
-
-    <ImageView
         android:id="@+id/imgReto"
         android:layout_width="match_parent"
         android:layout_height="0dp"
