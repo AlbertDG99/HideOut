@@ -19,10 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -69,7 +67,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
         eTPista = findViewById(R.id.eTPista);
-        locationTrack = new LocationTrack(this);
+
 
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
@@ -198,15 +196,15 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
+            locationTrack = new LocationTrack(this);
             latitud = locationTrack.getLatitude();
             longitud = locationTrack.getLongitude();
 
-            //setPic();
+            setPic();
         }
     }
 
-    /*
+
     private void setPic() {
         ImageView imageView = findViewById(R.id.imgReto);
         // Get the dimensions of the View
@@ -233,7 +231,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         imageView.setImageBitmap(bitmap);
     }
 
-     */
+
 
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -244,17 +242,15 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
     }
 
     private void uploadImage() throws IOException {
-        StorageReference imgRef = storageRef.child(currentPhotoPath);
+        Uri file = Uri.fromFile(new File(currentPhotoPath));
+        final StorageReference imgRef = storageRef.child("imagenes/"+file.getLastPathSegment());
 
-        Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(currentPhotoPath)));//
+       Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(currentPhotoPath)));//
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);//
         byte[] data = baos.toByteArray();
-        UploadTask uploadTask = imgRef.putBytes(data);
+       UploadTask uploadTask = imgRef.putBytes(data);
 
-        Uri file = Uri.fromFile(new File(currentPhotoPath));
-        final StorageReference riversRef = storageRef.child("imagenes/"+file.getLastPathSegment());
-        uploadTask = riversRef.putFile(file);
 
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -279,7 +275,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                                 "EXITO", Toast.LENGTH_SHORT);
 
                 toast.show();*/
-                riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
                 {
                     @Override
                     public void onSuccess(Uri downloadUrl)
