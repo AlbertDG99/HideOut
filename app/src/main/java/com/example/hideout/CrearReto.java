@@ -109,40 +109,43 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
 
             case R.id.bCrearReto:
 
-                Reto reto = new Reto();
-                reto.setIdUsu(user.getUid());
-                reto.setNomUsu(user.getDisplayName());
-                reto.setPista(eTPista.getText().toString());
-                reto.setLatitud(latitud);
-                reto.setLongitud(longitud);
-                reto.setImagen(currentPhotoPath);
+                if(validar()){
+                    Reto reto = new Reto();
+                    reto.setIdUsu(user.getUid());
+                    reto.setNomUsu(user.getDisplayName());
+                    reto.setPista(eTPista.getText().toString());
+                    reto.setLatitud(latitud);
+                    reto.setLongitud(longitud);
+                    reto.setImagen(currentPhotoPath);
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("message");
-                myRef.push().setValue(reto);
-                uploadImage();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("message");
+                    myRef.push().setValue(reto);
+                    uploadImage();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
-                //informamos al usuario con un dialog del exito
-                builder.setTitle("Información");
-                builder.setMessage("¡Reto creado con éxito!");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Aceptar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // redirigimos a la pantalla principal
-                                finish();
-                            }
-                        });
-                builder.setNegativeButton("",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // redirigimos a la pantalla principal
-                                finish();
-                            }
-                        });
-                AlertDialog infoDialog = builder.create();
-                infoDialog.show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
+                    //informamos al usuario con un dialog del exito
+                    builder.setTitle("Información");
+                    builder.setMessage("¡Reto creado con éxito!");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Aceptar",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // redirigimos a la pantalla principal
+                                    finish();
+                                }
+                            });
+                    builder.setNegativeButton("",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // redirigimos a la pantalla principal
+                                    finish();
+                                }
+                            });
+                    AlertDialog infoDialog = builder.create();
+                    infoDialog.show();
+                }
+
                 break;
         }
     }
@@ -270,5 +273,38 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         });
     }
 
+    private boolean validar() {
+
+        //booleano de control
+        boolean todoOk = true;
+
+        //comprobacion de que la pista tiene al menos 2 caracteres y menos de 150
+        if (eTPista.getText().length() < 2 || eTPista.getText().length() > 150) {
+            todoOk = false;
+            eTPista.setError("Este campo ha de tener entre 2 y 150 caracteres");
+        }
+
+        //comprobacion de que el email es correcto
+        if (latitud == 0 || longitud == 0) {
+            todoOk = false;
+            Toast toast =
+                    Toast.makeText(getApplicationContext(),
+                            "Ha ocurrido un error de geolocalización", Toast.LENGTH_SHORT);
+
+            toast.show();
+        }
+
+        //comprobacion de que el password tiene al menos 5 caracteres y menos de 20
+        if (currentPhotoPath.length() == 0) {
+            todoOk = false;
+            Toast toast =
+                    Toast.makeText(getApplicationContext(),
+                            "Debe hacer una foto para crear el reto", Toast.LENGTH_SHORT);
+
+            toast.show();
+        }
+
+        return todoOk;
+    }
 
 }

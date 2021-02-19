@@ -73,7 +73,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="25dp">
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp">
 
                 <TextView
                     android:id="@+id/changePass"
