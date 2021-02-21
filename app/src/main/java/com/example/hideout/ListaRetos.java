@@ -56,8 +56,12 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                     //obtenemos los datos y los introducimos en un objeto "Usuario"
                     Reto reto = snapshot.getValue(Reto.class);
 
-                    retosArrayList.add(reto);
-                    adapter.notifyDataSetChanged();
+                    if(reto != null){
+
+                        retosArrayList.add(reto);
+
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
 

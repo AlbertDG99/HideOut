@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:hint="Aqui te dirán cosas nazis"
+        android:hint="Pista"
         />
 
     <ImageView
@@ -42,16 +42,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="20dp"
-        android:src="@drawable/imgphoto" />
+        android:src="@drawable/radar0" />
 
     <Button
-        android:id="@+id/bCrearReto"
+        android:id="@+id/bFinReto"
         style="@style/Boton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:backgroundTint="#F19000"
-        android:text="¡DESTRUIR EL UNIVERSO!"
+        android:text="¡ENCONTRADO!"
         android:alpha="0.2"/>
 </LinearLayout>
