@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -27,6 +28,11 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
 
         tNombre = findViewById(R.id.tNombre);
         mAuth = FirebaseAuth.getInstance();
+
+        try{
+            ImageView avatar = findViewById(R.id.imgUser);
+            avatar.setImageURI(user.getPhotoUrl());
+        }catch(Exception e){}
 
         comprobarLogin();
 
