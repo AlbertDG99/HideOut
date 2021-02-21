@@ -1,10 +1,12 @@
 package com.example.hideout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,12 +23,28 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class Juego extends AppCompatActivity implements View.OnClickListener {
+
+    //intance de la base de datos
+    private FirebaseDatabase database = FirebaseDatabase.getInstance("https://hideout-d08d6-default-rtdb.firebaseio.com/");
+    //base de datos y colección
+    private DatabaseReference myRef = database.getReference("Usuarios");
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
     Handler handler = new Handler();
     Bitmap imagen;
     String pista = "";
@@ -37,6 +55,7 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
     ImageView imgRadar;
     TextView tPista;
     Button bFinReto;
+    int monedas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +63,11 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_juego);
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
-
         Bundle extras = getIntent().getExtras();
         Reto reto = (Reto) extras.getSerializable("Reto");
+
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
         latitudReto = reto.getLatitud();
         longitudReto = reto.getLongitud();
@@ -54,6 +75,8 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
         tPista.setText(reto.getPista());
         imgRadar = findViewById(R.id.imgRadar);
         bFinReto = findViewById(R.id.bFinReto);
+
+        monedas = 50;
 
         bFinReto.setEnabled(false);
 
@@ -78,6 +101,7 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
         obtenerLoc();
 
         findViewById(R.id.imageBack).setOnClickListener(this);
+        findViewById(R.id.bFinReto).setOnClickListener(this);
     }
 
     public void obtenerLoc() {
@@ -120,7 +144,6 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -135,7 +158,61 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
             //boton encontrado
             case R.id.bFinReto:
 
+                //metodo añadir monedas
+                sumarMonedas();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Juego.this);
+                //informamos al usuario con un dialog del exito
+                builder.setTitle("¡ENHORABUENA!");
+                builder.setMessage("Has encontrado el lugar oculto.\nHas ganado: " + monedas + " monedas.");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Aceptar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // redirigimos a la pantalla principal
+                                finish();
+                            }
+                        });
+                builder.setNegativeButton("",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // redirigimos a la pantalla principal
+                                finish();
+                            }
+                        });
+                AlertDialog infoDialog = builder.create();
+                infoDialog.show();
+
                 break;
         }
+    }
+
+    private void sumarMonedas(){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    //obtenemos los datos y los introducimos en un objeto "Usuario"
+                    Usuario usuarioInfo = snapshot.getValue(Usuario.class);
+
+                    if(usuarioInfo != null){
+                        //traemos la info y la mostramos si coincide el ID
+                        if(usuarioInfo.getIdUsu().equals(user.getUid())){
+                            //mostramos el numero de monedas
+                            usuarioInfo.setMonedas(usuarioInfo.getMonedas() + monedas);
+                            myRef.setValue(usuarioInfo);
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+            }
+        });
     }
 }

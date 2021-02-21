@@ -17,15 +17,26 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class MenuPrincipal extends AppCompatActivity implements View.OnClickListener {
 
+    //intance de la base de datos
+    private FirebaseDatabase database = FirebaseDatabase.getInstance("https://hideout-d08d6-default-rtdb.firebaseio.com/");
+    //base de datos y colección
+    private DatabaseReference myRef = database.getReference("Usuarios");
+
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
     private TextView tNombre;
+    private TextView tNivel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +47,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         mAuth = FirebaseAuth.getInstance();
 
         comprobarLogin();
+        comprobarMonedas();
 
         findViewById(R.id.bCrear).setOnClickListener(this);
         findViewById(R.id.bJugar).setOnClickListener(this);
@@ -49,6 +61,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         super.onResume();
 
         comprobarLogin();
+        comprobarMonedas();
     }
 
     @Override
@@ -98,6 +111,46 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private void comprobarMonedas(){
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    //obtenemos los datos y los introducimos en un objeto "Usuario"
+                    Usuario usuarioInfo = snapshot.getValue(Usuario.class);
+
+                    if(usuarioInfo != null){
+                        //traemos la info y la mostramos si coincide el ID
+                        if(usuarioInfo.getIdUsu().equals(user.getUid())){
+                            //mostramos el numero de monedas
+                            tNivel.setText(usuarioInfo.getMonedas());
+                        }
+
+                    }else{
+                        //creamos una entrada
+                        Usuario usuarioInfoNew = new Usuario();
+                        usuarioInfoNew.setIdUsu(user.getUid());
+                        usuarioInfoNew.setMonedas(0);
+                        myRef.push().setValue(usuarioInfoNew);
+                        tNivel.setText(usuarioInfoNew.getMonedas());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                //creamos una entrada
+                Usuario usuarioInfoNew = new Usuario();
+                usuarioInfoNew.setIdUsu(user.getUid());
+                usuarioInfoNew.setMonedas(0);
+                myRef.push().setValue(usuarioInfoNew);
+                tNivel.setText(usuarioInfoNew.getMonedas());
+            }
+        });
+    }
 
 }
 
