@@ -33,6 +33,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.bCrear).setOnClickListener(this);
         findViewById(R.id.bJugar).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
+        findViewById(R.id.bJugar).setOnClickListener(this);
 
     }
 
@@ -76,7 +77,6 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
                 });
                 settings.show();
                 break;
-
         }
 
     }

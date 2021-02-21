@@ -3,7 +3,9 @@ package com.example.hideout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ListaRetos extends AppCompatActivity implements View.OnClickListener {
@@ -74,13 +77,9 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
 
 
                 //meter en intent -> retosArrayList.get(position); (Reto)
-
-
-                Toast.makeText(ListaRetos.this, "" + position, Toast.LENGTH_SHORT).show();
-
-
-
-
+                Intent intent = new Intent(ListaRetos.this, Juego.class);
+                intent.putExtra("Reto", (Serializable) retosArrayList.get(position));
+                startActivity(intent);
 
             }
         });

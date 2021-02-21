@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/grandiente"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".Juego">
+
+    <ImageView
+        android:id="@+id/imageBack"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="right"
+        android:background="@drawable/shadows"
+        android:backgroundTint="#6F2895C7"
+        android:padding="5dp"
+        app:srcCompat="@drawable/backarrowb" />
+
+    <ImageView
+        android:id="@+id/imgReto"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:padding="20dp"
+        android:src="@drawable/imgphoto" />
+
+
+    <TextView
+        android:id="@+id/tPista"
+        style="@style/Input"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:hint="Aqui te dirán cosas nazis"
+        />
+
+    <ImageView
+        android:id="@+id/imgRadar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp"
+        android:src="@drawable/imgphoto" />
+
+    <Button
+        android:id="@+id/bCrearReto"
+        style="@style/Boton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="#F19000"
+        android:text="¡DESTRUIR EL UNIVERSO!"
+        android:alpha="0.2"/>
+</LinearLayout>
