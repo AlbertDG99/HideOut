@@ -22,7 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".Juego"></activity>
-        <activity android:name=".ListaRetos" />
+        <activity android:name=".ListaRetos"/>
+
+
         <activity android:name=".Opening">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListaRetos" />
         <activity android:name=".Registro" />
         <activity android:name=".CrearReto" />
         <activity android:name=".PerfilUsuario" />
