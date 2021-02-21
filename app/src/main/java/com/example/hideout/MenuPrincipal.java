@@ -31,6 +31,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         comprobarLogin();
 
         findViewById(R.id.bCrear).setOnClickListener(this);
+        findViewById(R.id.bJugar).setOnClickListener(this);
         findViewById(R.id.imgSettings).setOnClickListener(this);
 
     }
@@ -47,6 +48,10 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.bCrear:
                 startActivity(new Intent(MenuPrincipal.this, CrearReto.class));
+                break;
+
+            case R.id.bJugar:
+                startActivity(new Intent(MenuPrincipal.this, ListaRetos.class));
                 break;
 
             case R.id.imgSettings:
