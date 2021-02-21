@@ -29,11 +29,6 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         tNombre = findViewById(R.id.tNombre);
         mAuth = FirebaseAuth.getInstance();
 
-        try{
-            ImageView avatar = findViewById(R.id.imgUser);
-            avatar.setImageURI(user.getPhotoUrl());
-        }catch(Exception e){}
-
         comprobarLogin();
 
         findViewById(R.id.bCrear).setOnClickListener(this);
@@ -74,7 +69,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
                             //botón cerrar sesion
                             case R.id.itemCSesion:
                                 FirebaseAuth.getInstance().signOut();
-
+                                startActivity(new Intent(MenuPrincipal.this, MainActivity.class));
                                 finish();
                                 break;
                         }
