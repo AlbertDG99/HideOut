@@ -292,6 +292,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                         DatabaseReference myRef = database.getReference("Retos");
 
                         myRef.push().setValue(reto);
+                        //myRef.child(urlImagen).setValue(reto);
 
                     }
                 });
