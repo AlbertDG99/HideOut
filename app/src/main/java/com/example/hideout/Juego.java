@@ -204,8 +204,7 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
                         if(usuarioInfo.getIdUsu().equals(user.getUid())){
                             //mostramos el numero de monedas
                             usuarioInfo.setMonedas(usuarioInfo.getMonedas() + monedas);
-                            myRef.child(user.getUid()).setValue(usuarioInfo);
-                        }
+                            myRef.child(user.getUid()).setValue(usuarioInfo);                        }
 
                     }
                 }

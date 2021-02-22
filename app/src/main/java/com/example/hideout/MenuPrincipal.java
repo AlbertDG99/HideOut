@@ -135,13 +135,6 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
 
                         }
                     }
-                if (!existeUsu) {
-                    Usuario usuarioInfoNew = new Usuario();
-                    usuarioInfoNew.setIdUsu(user.getUid());
-                    usuarioInfoNew.setMonedas(0);
-                    myRef.push().setValue(usuarioInfoNew);
-                    tNivel.setText(Integer.toString(usuarioInfoNew.getMonedas()));
-                }
             }
 
             @Override

@@ -64,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
                     android:paddingStart="5dp"
-                    android:text="Monedas"
+                    android:text="0"
                     android:textColor="#fff" />
 
             </LinearLayout>
