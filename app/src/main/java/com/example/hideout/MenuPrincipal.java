@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MenuPrincipal extends AppCompatActivity implements View.OnClickListener {
@@ -40,6 +41,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_menu_principal);
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
 
         tNombre = findViewById(R.id.tNombre);
         mAuth = FirebaseAuth.getInstance();
@@ -110,7 +112,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
     }
 
     private void comprobarMonedas(){
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

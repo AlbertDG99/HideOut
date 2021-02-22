@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class ListaRetos extends AppCompatActivity implements View.OnClickListener {
@@ -46,6 +47,7 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_lista_retos);
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
 
         LocationTrack location = new LocationTrack(this);
         latitudUsu = location.getLatitude();
