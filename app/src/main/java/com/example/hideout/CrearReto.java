@@ -281,10 +281,11 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                     public void onSuccess(Uri downloadUrl)
                     {
                     urlImagen= downloadUrl.toString();
-                        reto.setImagen(urlImagen);
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("Retos");
-                        myRef.push().setValue(reto);
+                    reto.setImagen(urlImagen);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("Retos");
+
+                    myRef.push().setValue(reto);
 
                     }
                 });
@@ -314,7 +315,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         }
 
         //comprobacion de que el password tiene al menos 5 caracteres y menos de 20
-        if (currentPhotoPath.length() == 0) {
+        if (currentPhotoPath == null) {
             todoOk = false;
             Toast toast =
                     Toast.makeText(getApplicationContext(),

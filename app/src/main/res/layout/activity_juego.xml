@@ -13,7 +13,7 @@
         android:id="@+id/imageBack"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_gravity="right"
+        android:layout_gravity="start"
         android:background="@drawable/shadows"
         android:backgroundTint="#6F2895C7"
         android:padding="5dp"
