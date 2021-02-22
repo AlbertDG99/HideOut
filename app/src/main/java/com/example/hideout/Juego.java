@@ -78,7 +78,7 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
         imgRadar = findViewById(R.id.imgRadar);
         bFinReto = findViewById(R.id.bFinReto);
 
-        monedas = 50;
+        rellenarMonedas();
 
         bFinReto.setEnabled(false);
 
@@ -104,6 +104,25 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
 
         findViewById(R.id.imageBack).setOnClickListener(this);
         findViewById(R.id.bFinReto).setOnClickListener(this);
+    }
+
+    public void rellenarMonedas(){
+
+        LocationTrack location = new LocationTrack(Juego.this);
+        latitudUsu = location.getLatitude();
+        longitudUsu = location.getLongitude();
+
+        Location locReto = new Location("LocReto");
+        locReto.setLatitude(latitudReto);
+        locReto.setLongitude(longitudReto);
+
+        Location locUsu = new Location("LocUsu");
+        locUsu.setLongitude(longitudUsu);
+        locUsu.setLatitude(latitudUsu);
+
+        float distancia = locReto.distanceTo(locUsu);
+
+        monedas = Math.round(distancia);
     }
 
     public void obtenerLoc() {
