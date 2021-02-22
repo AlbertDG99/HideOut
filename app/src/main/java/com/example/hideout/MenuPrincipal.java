@@ -44,6 +44,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
 
         tNombre = findViewById(R.id.tNombre);
+        tNivel = findViewById(R.id.tNivel);
         mAuth = FirebaseAuth.getInstance();
 
         comprobarLogin();
@@ -111,43 +112,42 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void comprobarMonedas(){
-        myRef.addValueEventListener(new ValueEventListener() {
+    private void comprobarMonedas() {
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            Boolean existeUsu = false;
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() != null)
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        //obtenemos los datos y los introducimos en un objeto "Usuario"
+                        Usuario usuarioInfo = snapshot.getValue(Usuario.class);
 
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    //obtenemos los datos y los introducimos en un objeto "Usuario"
-                    Usuario usuarioInfo = snapshot.getValue(Usuario.class);
+                        if (usuarioInfo != null) {
+                            //traemos la info y la mostramos si coincide el ID
+                            if (usuarioInfo.getIdUsu().equals(user.getUid())) {
+                                existeUsu = true;
+                                //mostramos el numero de monedas
+                                tNivel.setText(Integer.toString(usuarioInfo.getMonedas()));
+                            }
 
-                    if(usuarioInfo != null){
-                        //traemos la info y la mostramos si coincide el ID
-                        if(usuarioInfo.getIdUsu().equals(user.getUid())){
-                            //mostramos el numero de monedas
-                            tNivel.setText(usuarioInfo.getMonedas());
+
                         }
-
-                    }else{
-                        //creamos una entrada
-                        Usuario usuarioInfoNew = new Usuario();
-                        usuarioInfoNew.setIdUsu(user.getUid());
-                        usuarioInfoNew.setMonedas(0);
-                        myRef.push().setValue(usuarioInfoNew);
-                        tNivel.setText(usuarioInfoNew.getMonedas());
                     }
+                if (!existeUsu) {
+                    Usuario usuarioInfoNew = new Usuario();
+                    usuarioInfoNew.setIdUsu(user.getUid());
+                    usuarioInfoNew.setMonedas(0);
+                    myRef.push().setValue(usuarioInfoNew);
+                    tNivel.setText(Integer.toString(usuarioInfoNew.getMonedas()));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
-                //creamos una entrada
-                Usuario usuarioInfoNew = new Usuario();
-                usuarioInfoNew.setIdUsu(user.getUid());
-                usuarioInfoNew.setMonedas(0);
-                myRef.push().setValue(usuarioInfoNew);
-                tNivel.setText(usuarioInfoNew.getMonedas());
+
             }
         });
     }

@@ -5,9 +5,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -33,7 +30,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Registro" />
-        <activity android:name=".CrearReto" />
+        <activity android:name=".CrearReto"
+            />
         <activity android:name=".PerfilUsuario" />
         <activity android:name=".MenuPrincipal" />
         <activity android:name=".MainActivity">
