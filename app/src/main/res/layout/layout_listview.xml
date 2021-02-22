@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:contentDescription="Descripción del contenido de la imagen"
         android:scaleType="fitXY"
-        android:src="@android:drawable/ic_menu_gallery" />
+        android:src="@drawable/location" />
 
     <LinearLayout
         android:layout_width="fill_parent"

@@ -115,11 +115,12 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
     private void comprobarMonedas() {
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             Boolean existeUsu = false;
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null)
+                if (dataSnapshot.getValue() != null){
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //obtenemos los datos y los introducimos en un objeto "Usuario"
                         Usuario usuarioInfo = snapshot.getValue(Usuario.class);
@@ -131,10 +132,18 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
                                 //mostramos el numero de monedas
                                 tNivel.setText(Integer.toString(usuarioInfo.getMonedas()));
                             }
-
-
                         }
                     }
+                }
+
+                if(!existeUsu){
+                    Usuario newUser = new Usuario();
+                    newUser.setIdUsu(user.getUid());
+                    newUser.setMonedas(0);
+
+                    myRef.child(user.getUid()).setValue(newUser);
+                }
+
             }
 
             @Override
