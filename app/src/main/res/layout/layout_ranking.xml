@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:padding="15dp"
         android:scaleType="fitXY"
-        android:src="@drawable/medallaIcon" />
+        android:src="@drawable/medallaicon" />
 
     <LinearLayout
         android:layout_width="fill_parent"
