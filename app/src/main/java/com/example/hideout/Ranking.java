@@ -61,8 +61,8 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
                 }
                 userArrayList = rankingUsuarios(rankingUsuarios(userArrayList));
                 if(userArrayList.size()>4)
-                userArrayList.subList(0, 2).clear();
                 Collections.reverse(userArrayList);
+                userArrayList.subList(4, userArrayList.size()).clear();
                 adapter.notifyDataSetChanged();
             }
 
