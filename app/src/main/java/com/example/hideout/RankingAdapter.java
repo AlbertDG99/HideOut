@@ -18,7 +18,7 @@ public class RankingAdapter  extends ArrayAdapter<Usuario> {
 
     ImageView imagen;
 
-    private static int cont = 0;
+    private int cont = 0;
 
     public RankingAdapter(@NonNull Context context,  @NonNull ArrayList<Usuario> usuarios) {
         super(context, 0, usuarios);
