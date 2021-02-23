@@ -112,6 +112,10 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
     }
 
     public void clearMemory(){
-        bmp.recycle();
+        try {
+            bmp.recycle();
+        }catch (Exception e){
+
+        }
     }
 }
