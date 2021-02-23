@@ -126,6 +126,7 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                 if (dActual > 400) {
                     retosArrayList.remove(i);
                     i--;
+                    error=true;
                 } else if (dActual < dAnterior && i != 0) {
                     Reto aux = retosArrayList.get(i - 1);
                     retosArrayList.set(i - 1, r);
