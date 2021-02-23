@@ -42,7 +42,7 @@ public class RankingAdapter  extends ArrayAdapter<Usuario> {
         // Populate the data into the template view using the data object
 
         assert usuario != null;
-        textSuperiorRank.setText(usuario.getIdUsu());
+        textSuperiorRank.setText(usuario.getNombre());
         textInferiorRank.setText(Integer.toString(usuario.getMonedas()));
         imagenMedallas();
 
