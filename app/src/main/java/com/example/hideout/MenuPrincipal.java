@@ -144,6 +144,7 @@ public class MenuPrincipal extends AppCompatActivity implements View.OnClickList
 
                 if(!existeUsu){
                     Usuario newUser = new Usuario();
+                    newUser.setNombre(user.getDisplayName());
                     newUser.setIdUsu(user.getUid());
                     newUser.setMonedas(0);
 

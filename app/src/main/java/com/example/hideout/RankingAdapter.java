@@ -43,7 +43,7 @@ public class RankingAdapter  extends ArrayAdapter<Usuario> {
 
         assert usuario != null;
         textSuperiorRank.setText(usuario.getIdUsu());
-        textInferiorRank.setText(usuario.getMonedas());
+        textInferiorRank.setText(Integer.toString(usuario.getMonedas()));
         imagenMedallas();
 
         cont++;
@@ -65,7 +65,6 @@ public class RankingAdapter  extends ArrayAdapter<Usuario> {
                 imagen.setImageResource(R.drawable.bronceicon);
                 break;
             default:
-                imagen.setImageResource(R.drawable.medallaicon);
                 break;
         }
     }
