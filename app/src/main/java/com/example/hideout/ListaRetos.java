@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -84,6 +85,10 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
 
                     }
                 }
+                if(retosArrayList.size()==0){
+                    TextView tDisplay = findViewById(R.id.tDisplay);
+                    tDisplay.setText("No hay retos cerca de tu posición ahora mismo");
+                }
                 retosArrayList = organizarLista(retosArrayList);
                 Collections.reverse(retosArrayList);
                 adapter.notifyDataSetChanged();
@@ -94,7 +99,10 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                 // Failed to read value
             }
         });
-
+        if(retosArrayList.size()==0){
+            TextView tDisplay = findViewById(R.id.tDisplay);
+            tDisplay.setText("No hay retos cerca de tu posición ahora mismo");
+        }
         retosList.setAdapter(adapter);
 
         findViewById(R.id.imageBack).setOnClickListener(this);
