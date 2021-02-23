@@ -15,6 +15,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Collections.reverse;
 
 public class Ranking extends AppCompatActivity implements View.OnClickListener {
     //intance de la base de datos
@@ -55,6 +60,7 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
                 userArrayList = rankingUsuarios(rankingUsuarios(userArrayList));
+                Collections.reverse(userArrayList);
                 adapter.notifyDataSetChanged();
             }
 
@@ -96,9 +102,8 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
                     userArrayList.set(i - 1, u);
                     userArrayList.set(i, aux);
                     error = true;
-                    mAnterior = u.getMonedas();
                 }
-
+                mAnterior = u.getMonedas();
 
             }
         }

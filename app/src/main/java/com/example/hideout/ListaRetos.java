@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -84,6 +85,7 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                     }
                 }
                 retosArrayList = organizarLista(retosArrayList);
+                Collections.reverse(retosArrayList);
                 adapter.notifyDataSetChanged();
             }
 
