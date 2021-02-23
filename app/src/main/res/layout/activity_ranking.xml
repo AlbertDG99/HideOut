@@ -25,7 +25,7 @@
         android:layout_height="100dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="-30dp"
-        app:srcCompat="@drawable/retoshideout" />
+        app:srcCompat="@drawable/rankhideout" />
 
     <TextView
         android:id="@+id/textView2"
@@ -36,7 +36,7 @@
         android:textSize="20sp"
         android:textColor="@color/colorButton"
         android:textStyle="bold"
-        android:text="¡Elige un reto!" />
+        android:text="¡SOLO LOS MEJORES!" />
 
     <LinearLayout
         android:layout_width="match_parent"
