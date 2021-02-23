@@ -18,10 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".Juego"></activity>
-        <activity android:name=".ListaRetos"/>
-
-
+        <activity android:name=".Ranking"></activity>
+        <activity android:name=".Juego" />
+        <activity android:name=".ListaRetos" />
         <activity android:name=".Opening">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,12 +29,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Registro" />
-        <activity android:name=".CrearReto"
-            />
+        <activity android:name=".CrearReto" />
         <activity android:name=".PerfilUsuario" />
         <activity android:name=".MenuPrincipal" />
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

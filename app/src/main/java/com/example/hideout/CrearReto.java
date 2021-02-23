@@ -3,6 +3,7 @@ package com.example.hideout;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -39,7 +40,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -62,6 +62,9 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crear_reto);
 
+        //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         mAuth = FirebaseAuth.getInstance();
         //obtenemos el usuario
         user = mAuth.getCurrentUser();
@@ -70,7 +73,6 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         storageRef = storage.getReference();
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
 
         eTPista = findViewById(R.id.eTPista);
 

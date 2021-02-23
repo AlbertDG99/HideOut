@@ -17,7 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import static android.content.Context.LOCATION_SERVICE;
+
 public class LocationTrack extends Service implements LocationListener {
     private final Context mContext;
     boolean checkGPS = false;

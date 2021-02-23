@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.content.ComponentCallbacks2;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class ListaRetos extends AppCompatActivity implements View.OnClickListener {
@@ -47,7 +47,9 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_lista_retos);
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
+
+        //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         LocationTrack location = new LocationTrack(this);
         latitudUsu = location.getLatitude();
@@ -126,7 +128,6 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                 if (dActual > 400) {
                     retosArrayList.remove(i);
                     i--;
-                    error=true;
                 } else if (dActual < dAnterior && i != 0) {
                     Reto aux = retosArrayList.get(i - 1);
                     retosArrayList.set(i - 1, r);

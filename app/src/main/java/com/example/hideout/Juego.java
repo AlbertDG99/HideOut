@@ -5,21 +5,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class Juego extends AppCompatActivity implements View.OnClickListener {
@@ -62,8 +57,11 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_juego);
+
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, 1);
+
+        //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Bundle extras = getIntent().getExtras();
         Reto reto = (Reto) extras.getSerializable("Reto");
@@ -151,10 +149,10 @@ public class Juego extends AppCompatActivity implements View.OnClickListener {
                     imgRadar.setImageResource(R.drawable.radar1);
                 }else if(distancia>50){
                     imgRadar.setImageResource(R.drawable.radar2);
-                }else if(distancia>10){
+                }else if(distancia>25){
                     imgRadar.setImageResource(R.drawable.radar3);
                 }
-                else if(distancia<=10){
+                else if(distancia<=25){
                     imgRadar.setImageResource(R.drawable.radar3);
                     bFinReto.setEnabled(true);
                     bFinReto.setAlpha(1);
