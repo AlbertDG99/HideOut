@@ -3,6 +3,7 @@ package com.example.hideout;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.Destroyable;
 
 public class RetosAdapter  extends ArrayAdapter<Reto> {
+
+    TextView textSuperior;
+    TextView textInferior;
 
     Bitmap bmp;
     public RetosAdapter(@NonNull Context context, @NonNull ArrayList<Reto> retos) {
@@ -43,8 +44,8 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
         }
         // Lookup view for data population
         final ImageView imagen = (ImageView) convertView.findViewById(R.id.imagen);
-        TextView textSuperior = (TextView) convertView.findViewById(R.id.textSuperior);
-        TextView textInferior = (TextView) convertView.findViewById(R.id.textInferior);
+        textSuperior = (TextView) convertView.findViewById(R.id.textSuperior);
+        textInferior = (TextView) convertView.findViewById(R.id.textInferior);
 
         StorageReference gsReference = storage.getReferenceFromUrl(reto.getImagen());
 
@@ -54,8 +55,6 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
             public void onSuccess(byte[] bytes) {
                 bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imagen.setImageBitmap(bmp);
-
-
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -77,15 +76,40 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
         usu.setLatitude(location.getLatitude());
         usu.setLongitude(location.getLongitude());
 
-        textSuperior.setText(Float.toString(actual.distanceTo(usu)));
+        textSuperior.setText(distancia(actual.distanceTo(usu)));
         textInferior.setText(reto.getPista());
+
         // Return the completed view to render on screen
-
-
         return convertView;
     }
 
+    public String distancia(float actualDistance){
 
+        String distancia = "";
+
+        if(actualDistance>350){
+            distancia = "MUY LEJOS";
+            textSuperior.setTextColor(Color.rgb(240, 55, 0));
+        }else if(actualDistance>250){
+            distancia = "LEJOS";
+            //textSuperior.setTextColor(Color.argb(1, 240, 127, 0));
+            textSuperior.setTextColor(Color.rgb(240, 127, 0));
+        }else if(actualDistance>100){
+            distancia = "MEDIO";
+            //textSuperior.setTextColor(Color.argb(1, 201, 201, 0));
+            textSuperior.setTextColor(Color.rgb(201, 201, 0));
+        }else if(actualDistance>50){
+            distancia = "CERCA";
+            //textSuperior.setTextColor(Color.argb(1, 17, 195, 0));
+            textSuperior.setTextColor(Color.rgb(17, 195, 0));
+        }else{
+            distancia = "MUY CERCA";
+            //textSuperior.setTextColor(Color.argb(1, 44, 235, 25));
+            textSuperior.setTextColor(Color.rgb(44, 235, 25));
+        }
+
+        return distancia;
+    }
 
     public void clearMemory(){
         bmp.recycle();
