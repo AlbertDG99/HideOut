@@ -184,6 +184,8 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                 }
 
+                break;
+
             //botón eliminar perfil
             case R.id.buttonDelete:
 

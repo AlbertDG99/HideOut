@@ -85,10 +85,6 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
 
                     }
                 }
-                if(retosArrayList.size()==0){
-                    TextView tDisplay = findViewById(R.id.tDisplay);
-                    tDisplay.setText("No hay retos cerca de tu posición ahora mismo");
-                }
                 retosArrayList = organizarLista(retosArrayList);
                 Collections.reverse(retosArrayList);
                 adapter.notifyDataSetChanged();
@@ -99,10 +95,7 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
                 // Failed to read value
             }
         });
-        if(retosArrayList.size()==0){
-            TextView tDisplay = findViewById(R.id.tDisplay);
-            tDisplay.setText("No hay retos cerca de tu posición ahora mismo");
-        }
+
         retosList.setAdapter(adapter);
 
         findViewById(R.id.imageBack).setOnClickListener(this);
