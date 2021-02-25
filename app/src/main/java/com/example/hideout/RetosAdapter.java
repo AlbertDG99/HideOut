@@ -21,32 +21,52 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+/**
+ * Adaptador del listview de los retos
+ */
 public class RetosAdapter  extends ArrayAdapter<Reto> {
 
     TextView textSuperior;
     TextView textInferior;
 
     Bitmap bmp;
+
+    /**
+     * Conructor del adapter
+     *
+     * @param context activity
+     * @param retos arraylist de retos
+     */
     public RetosAdapter(@NonNull Context context, @NonNull ArrayList<Reto> retos) {
         super(context, 0, retos);
-
     }
 
+    /**
+     * Método para mostrar la info en el layout deseado
+     *
+     * @param position posicion del reto
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        //instance de la db
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com");
-        // Get the data item for this position
+        // Cogemos el dato de la posicion
         Reto reto = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
+        // si el convertview es nulo
         if (convertView == null) {
+            //aplicamos la vista del layout
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_listview, parent, false);
         }
-        // Lookup view for data population
+        // instanciamos los campos del layout
         final ImageView imagen = (ImageView) convertView.findViewById(R.id.imagen);
         textSuperior = (TextView) convertView.findViewById(R.id.textSuperior);
         textInferior = (TextView) convertView.findViewById(R.id.textInferior);
 
+        //referencia del storage
         StorageReference gsReference = storage.getReferenceFromUrl(reto.getImagen());
 
         final long ONE_MEGABYTE = 1024 * 1024;
@@ -64,14 +84,15 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
             }
         });
 
-        // Populate the data into the template view using the data object
-
+        //locationtrack
         LocationTrack location = new LocationTrack(this.getContext());
 
+        //posicion del reto
         Location actual = new Location("Actual");
         actual.setLongitude(reto.getLongitud());
         actual.setLatitude(reto.getLatitud());
 
+        //posicion del usuario
         Location usu = new Location("usu");
         usu.setLatitude(location.getLatitude());
         usu.setLongitude(location.getLongitude());
@@ -79,14 +100,20 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
         textSuperior.setText(distancia(actual.distanceTo(usu)));
         textInferior.setText(reto.getPista());
 
-        // Return the completed view to render on screen
         return convertView;
     }
 
+    /**
+     * Método que traduce la distancia entre el usuario y el reto en "MUY CERCA, CERCA, MEDIO, LEJOS y MUY LEJOS"
+     *
+     * @param actualDistance distancia
+     * @return devuelve un string
+     */
     public String distancia(float actualDistance){
 
         String distancia = "";
 
+        //segun la distancia cambia el string y el color de la palabra
         if(actualDistance>350){
             distancia = "MUY LEJOS";
             textSuperior.setTextColor(Color.rgb(240, 55, 0));
@@ -111,6 +138,9 @@ public class RetosAdapter  extends ArrayAdapter<Reto> {
         return distancia;
     }
 
+    /**
+     * Método para limpiar memoria cache ocupada por el bitmap
+     */
     public void clearMemory(){
         try {
             bmp.recycle();

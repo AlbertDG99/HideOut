@@ -1,11 +1,17 @@
 package com.example.hideout;
 
+/**
+ * Clase usuario
+ */
 public class Usuario {
-    private String nombre;
-    private String idUsu;
-    private int monedas;
+    private String nombre; //nombre del usuario
+    private String idUsu; //id del usuario
+    private int monedas; //monedas del usuario
 
+    //contructor
     public Usuario(){}
+
+    //getters y setters
 
     public String getNombre() {
         return nombre;

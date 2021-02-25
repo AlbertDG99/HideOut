@@ -2,14 +2,19 @@ package com.example.hideout;
 
 import java.io.Serializable;
 
+/**
+ * Clase Reto
+ */
 public class Reto implements Serializable {
 
-    private String idUsu;
-    private String nomUsu;
-    private double longitud;
-    private double latitud;
-    private String pista;
-    private String imagen;
+    private String idUsu; //id del usuario creador del reto
+    private String nomUsu; //nombre del usuario creador del reto
+    private double longitud; //longitud donde se encuentra el reto
+    private double latitud; //latitud donde se encuentra el reto
+    private String pista; //pista del reto
+    private String imagen; //imagen del reto
+
+    //constructores
 
     public Reto() {
     }
@@ -22,6 +27,8 @@ public class Reto implements Serializable {
         this.pista = pista;
         this.imagen = imagen;
     }
+
+    //getters y setters
 
     public String getIdUsu() {
         return idUsu;

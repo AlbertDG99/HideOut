@@ -48,15 +48,16 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_retos);
 
+        //geoposicionamiento
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
         //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //obtenemos la posicion del usuario
         LocationTrack location = new LocationTrack(this);
         latitudUsu = location.getLatitude();
         longitudUsu = location.getLongitude();
-
         locUsu.setLongitude(longitudUsu);
         locUsu.setLatitude(latitudUsu);
 
@@ -66,25 +67,26 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
 
         retosArrayList = new ArrayList<Reto>();
 
-        //final ArrayAdapter<Reto> adapter = new ArrayAdapter<Reto>(this, android.R.layout.simple_dropdown_item_1line, retosArrayList);
-
         adapter = new RetosAdapter(this, retosArrayList);
 
+        //recibimos la informacion de la db
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                //bucle para recoorer los hijos de lo cibido
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     //obtenemos los datos y los introducimos en un objeto "Usuario"
                     Reto reto = snapshot.getValue(Reto.class);
 
+                    //si reto no es nulo
                     if (reto != null) {
-
+                        //lo añadimos al arraylist
                         retosArrayList.add(reto);
-
                     }
                 }
+                //organizamos la lista de retos
                 retosArrayList = organizarLista(retosArrayList);
                 Collections.reverse(retosArrayList);
                 adapter.notifyDataSetChanged();
@@ -96,50 +98,62 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
             }
         });
 
+        //aplicamos el adapter
         retosList.setAdapter(adapter);
 
+        //listener
         findViewById(R.id.imageBack).setOnClickListener(this);
 
+        //listener del listview
         retosList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-
-
                 //meter en intent -> retosArrayList.get(position); (Reto)
                 Intent intent = new Intent(ListaRetos.this, Juego.class);
                 intent.putExtra("Reto", (Serializable) retosArrayList.get(position));
                 startActivity(intent);
-
             }
         });
-
     }
 
+    /**
+     * Método que organiza el arraylist de retos
+     *
+     * @param retosArrayList
+     * @return devuelve el arraylist organizado
+     */
     private ArrayList<Reto> organizarLista(ArrayList<Reto> retosArrayList) {
+        //booleana de control
         Boolean error = true;
         while (error) {
             error = false;
             float dAnterior = 0;
+            //bucle para recorrer el arraylist
             for (int i = 0; i < retosArrayList.size(); i++) {
+                //cogemos el reto de la posicion i
                 Reto r = retosArrayList.get(i);
 
+                //posicion del reto
                 Location actual = new Location("Actual");
                 actual.setLatitude(r.getLatitud());
                 actual.setLongitude(r.getLongitud());
 
+                //distancia al usuario
                 float dActual = actual.distanceTo(locUsu);
+                //si es mayor a 400m se elimina de la lista
                 if (dActual > 400) {
                     retosArrayList.remove(i);
                     i--;
                 } else if (dActual < dAnterior && i != 0) {
+                    //sino se ordena
+                    //reto de la posicion actual
                     Reto aux = retosArrayList.get(i - 1);
+                    //intercambiamos la posicon de los retos
                     retosArrayList.set(i - 1, r);
                     retosArrayList.set(i, aux);
                     error = true;
                     dAnterior=dActual;
                 }
-
-
             }
         }
         return retosArrayList;
@@ -151,10 +165,8 @@ public class ListaRetos extends AppCompatActivity implements View.OnClickListene
 
             //botón atrás
             case R.id.imageBack:
-
                 adapter.clearMemory();
                 finish();
-
                 break;
 
         }

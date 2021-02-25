@@ -15,11 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-
-import static java.util.Collections.reverse;
 
 public class Ranking extends AppCompatActivity implements View.OnClickListener {
     //intance de la base de datos
@@ -29,6 +25,7 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
     private ListView userList; //listview con los usuarios
     ArrayList<Usuario> userArrayList; //arraylist con los usuarios
 
+    //adaptador del listview
     RankingAdapter adapter;
 
     @Override
@@ -39,31 +36,36 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
         //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //instanciamos los campos del layout
         userList = findViewById(R.id.userList);
         userArrayList = new ArrayList<Usuario>();
         adapter = new RankingAdapter(this, userArrayList);
         findViewById(R.id.imageBack).setOnClickListener(this);
 
+        //obtenemos los datos de la database (una vez)
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                //bucle foreach que recorrer la informacion del hijo de la obtenida
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     //obtenemos los datos y los introducimos en un objeto "Usuario"
                     Usuario usuario = snapshot.getValue(Usuario.class);
 
+                    //si el usuario existe
                     if (usuario != null) {
-
+                        //se añade al arrayList
                         userArrayList.add(usuario);
-
                     }
                 }
+
                 userArrayList = rankingUsuarios(rankingUsuarios(userArrayList));
+                //si hay más de cuatro usuarios
                 if(userArrayList.size()>4)
-                Collections.reverse(userArrayList);
-                userArrayList.subList(4, userArrayList.size()).clear();
-                adapter.notifyDataSetChanged();
+                Collections.reverse(userArrayList); //se ordena la lista
+                userArrayList.subList(4, userArrayList.size()).clear(); //se dejan solo los 4 primeros
+                adapter.notifyDataSetChanged(); //se notifica al adaptador
             }
 
             @Override
@@ -72,6 +74,7 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
             }
         });
 
+        //se aplica el adaptador
         userList.setAdapter(adapter);
     }
 
@@ -81,38 +84,42 @@ public class Ranking extends AppCompatActivity implements View.OnClickListener {
 
             //botón atrás
             case R.id.imageBack:
-
                 finish();
-
                 break;
 
         }
     }
 
-
-
+    /**
+     * Método para ordenar los usuarios del arraylist
+     *
+     * @param userArrayList recibe el arraylist de usuarios
+     * @return devuelve el arraylist ordenado
+     */
     private ArrayList<Usuario> rankingUsuarios(ArrayList<Usuario> userArrayList) {
-        Boolean error = true;
+        Boolean error = true; //booleana de control
+        //mientras la variable de control sea true
         while (error) {
-            error = false;
+            error = false; //cambiamos la variable de control a false
             float mAnterior = 0;
+            //bucle for para recorrer el arraylist
             for (int i = 0; i < userArrayList.size(); i++) {
+                //llenamos el usuario de la posicion i
                 Usuario u = userArrayList.get(i);
 
+                //si el usuario de la posicion anterior tenia menos monedas
                 if (u.getMonedas()< mAnterior && i != 0) {
-                    Usuario aux = userArrayList.get(i - 1);
+                    Usuario aux = userArrayList.get(i - 1); //cogemos el usuario anterior
+                    //intercambiamos posiciones de los usuarios en el arraylist
                     userArrayList.set(i - 1, u);
                     userArrayList.set(i, aux);
-                    error = true;
+                    error = true; //cambia el valor de la variable de control
                 }
-                mAnterior = u.getMonedas();
-
+                mAnterior = u.getMonedas(); //cogemos el numero de monedas del usuario
             }
         }
         return userArrayList;
     }
-
-
 }
 
 

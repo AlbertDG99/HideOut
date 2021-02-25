@@ -14,54 +14,78 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
+/**
+ * Adaptador del listview del ranking
+ */
 public class RankingAdapter  extends ArrayAdapter<Usuario> {
 
-    ImageView imagen;
+    ImageView imagen; //imagen mostrar
 
-    private int cont = 0;
+    private int cont = 0; //contador auxiliar para mostrar las medallas
 
+    /**
+     * contructor del adapter
+     *
+     * @param context activity
+     * @param usuarios arraylist de usuarios
+     */
     public RankingAdapter(@NonNull Context context,  @NonNull ArrayList<Usuario> usuarios) {
         super(context, 0, usuarios);
     }
 
+    /**
+     * Método para mostrar la info en el layout deseado
+     *
+     * @param position posicion del usuario
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        //instance de la db
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com");
-        // Get the data item for this position
+        // Cogemos el dato de la posicion
         Usuario usuario = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
+        // si el convertview es nulo
         if (convertView == null) {
+            //aplicamos la vista del layout
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.layout_ranking, parent, false);
         }
-        // Lookup view for data population
+        // instanciamos los campos del layout
         imagen = (ImageView) convertView.findViewById(R.id.imagenMed);
         TextView textSuperiorRank = (TextView) convertView.findViewById(R.id.textSuperiorRank);
         TextView textInferiorRank = (TextView) convertView.findViewById(R.id.textInferiorRank);
 
-        // Populate the data into the template view using the data object
-
+        //si usuario no es nulo
         assert usuario != null;
         textSuperiorRank.setText(usuario.getNombre());
         textInferiorRank.setText(Integer.toString(usuario.getMonedas()));
+        //llamada al metodo de mostrar la medalla correcta
         imagenMedallas();
 
+        //aumentamos el contador
         cont++;
 
         // Return the completed view to render on screen
         return convertView;
     }
 
+    /**
+     * Método para mostrar las medallas en orden
+     */
     private void imagenMedallas(){
 
+        //switch segun la posicion del usuario
         switch(cont){
-            case 0:
+            case 0: //primera posicion
                 imagen.setImageResource(R.drawable.goldicon);
                 break;
-            case 1:
+            case 1: //segunda posicion
                 imagen.setImageResource(R.drawable.silvericon);
                 break;
-            case 2:
+            case 2: //tercera posicion
                 imagen.setImageResource(R.drawable.bronceicon);
                 break;
             default:

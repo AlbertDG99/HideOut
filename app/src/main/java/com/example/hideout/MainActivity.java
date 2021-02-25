@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,15 +35,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //opciones de login
         providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build());
 
         mAuth = FirebaseAuth.getInstance();
+        //obtenemos el usuario actual
         user = mAuth.getCurrentUser();
 
+        //si ya esta logueado te redirige a la siguiente activity
         comprobarLogin();
 
+        //listeners
         findViewById(R.id.buttonIniciar).setOnClickListener(this);
         findViewById(R.id.buttonRegistro).setOnClickListener(this);
     }
@@ -52,10 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        //cada vez que entramos en la activity se comprueba si el usuario esta logueado
         user = mAuth.getCurrentUser();
         comprobarLogin();
     }
 
+    /**
+     * Método que muestra las opciones de login
+     */
     private void showSignInOptions() {
         startActivityForResult(
                 AuthUI.getInstance()
@@ -71,21 +78,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        //respuesta del login
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if (resultCode == RESULT_OK) {
-                // Successfully signed in
+                // login con exito
                 user = FirebaseAuth.getInstance().getCurrentUser();
-
                 comprobarLogin();
-
-                // ...
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                // login erroneo
             }
         }
     }
@@ -97,28 +99,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //botón iniciar sesion
             case R.id.buttonIniciar:
-
+                //muestra opciones de login
                 showSignInOptions();
-
                 break;
 
             //botón registro
             case R.id.buttonRegistro:
-
                 Intent i = new Intent(this, Registro.class);
                 startActivity(i);
-
                 break;
-
         }
-
     }
 
+    /**
+     * Método que comprueba si el usuario ha logueado
+     */
     public void comprobarLogin() {
+        //si el usuario actual existe te lleva a la pantalla principal del juego
         if (user != null) {
             Intent i = new Intent(this, MenuPrincipal.class);
             startActivity(i);
-
             finish();
         }
     }

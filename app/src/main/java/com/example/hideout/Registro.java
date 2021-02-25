@@ -34,6 +34,7 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
         //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //instance de la db de la autentificacion
         mAuth = FirebaseAuth.getInstance();
 
         //instanciamos los campos del formulario
@@ -55,7 +56,9 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
             //botón de registro
             case R.id.buttonNewRegistro:
 
+                //una vez validados los datos
                 if(validar()){
+                    //metodo para crear un nuevo usuario
                     mAuth.createUserWithEmailAndPassword(regUserMail.getText().toString(), regPass.getText().toString())
                             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -98,21 +101,15 @@ public class Registro extends AppCompatActivity implements View.OnClickListener 
                                     } else {
                                         // If sign in fails, display a message to the user.
                                     }
-
-                                    // ...
                                 }
                             });
                 }
-
                 break;
 
             //botón atrás
             case R.id.imageBack:
-
                 finish();
-
                 break;
-
         }
     }
 

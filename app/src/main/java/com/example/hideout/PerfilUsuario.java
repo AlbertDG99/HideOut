@@ -63,6 +63,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
             finish();
         }
 
+        //listeners
         buttonEditar.setOnClickListener(this);
         findViewById(R.id.buttonChange).setOnClickListener(this);
         findViewById(R.id.buttonDelete).setOnClickListener(this);
@@ -70,6 +71,11 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
     }
 
+    /**
+     * Método onclick de los listeners
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
 
@@ -78,17 +84,22 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
             //botón editar nombre
             case R.id.buttonEditar:
 
+                //si los campos estan activados y no están vacios
                 if (textUserName.isEnabled() && textUserName.getText().length() != 0 && textUserMail.isEnabled() && textUserMail.getText().length() != 0) {
 
+                    //actualizamos el nombre de usuario
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(String.valueOf(textUserName.getText()))
                             .build();
 
+                    //si el nombre de usuario nuevo es diferente al antiguo
                     if(!Objects.equals(user.getDisplayName(), textUserName.getText().toString())){
+                        //lo actualizamos
                         user.updateProfile(profileUpdates)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        //si el proceso se completa se notifica
                                         if (task.isSuccessful()) {
                                             Toast toast =
                                                     Toast.makeText(getApplicationContext(),
@@ -100,11 +111,14 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                                 });
                     }
 
+                    //si el email nuevo es diferente al antiguo
                     if(!Objects.equals(user.getEmail(), textUserMail.getText().toString())) {
+                        //lo actualizamos
                         user.updateEmail(String.valueOf(textUserMail.getText()))
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        //si el proceso se completa se notifica
                                         if (task.isSuccessful()) {
                                             Toast toast =
                                                     Toast.makeText(getApplicationContext(),
@@ -112,7 +126,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                                             toast.show();
                                         }else{
-
+                                            //si el email ya existe en la base de datos
                                             if(validacionMail(textUserMail.getText().toString())){
                                                 Toast toast =
                                                         Toast.makeText(getApplicationContext(),
@@ -120,6 +134,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                                                 toast.show();
                                             }else{
+                                                //si el formato del email no es válido
                                                 Toast toast =
                                                         Toast.makeText(getApplicationContext(),
                                                                 "Formato de email erróneo", Toast.LENGTH_SHORT);
@@ -132,21 +147,23 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                                 });
                     }
 
+                    //una vez actualizados los datos los valores de los campos vuelve a los iniciales
                     textUserName.setEnabled(false);
                     textUserMail.setEnabled(false);
                     buttonEditar.setText("EDITAR PERFIL");
 
                 } else {
+                    //al primer click se activan los campos para modificar los datos
                     textUserName.setEnabled(true);
                     textUserMail.setEnabled(true);
                     buttonEditar.setText("GUARDAR CAMBIOS");
                 }
-
                 break;
 
             //botón editar password
             case R.id.buttonChange:
 
+                //si los campos de password estan vacios
                 if(textNewPass.getText().length() == 0 || textRepNewPass.getText().length() == 0){
                     Toast toast =
                             Toast.makeText(getApplicationContext(),
@@ -154,6 +171,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                     toast.show();
                 }else{
+                    //comprobación de si coinciden los paswords nuevos
                     if(!textNewPass.getText().toString().equals(textRepNewPass.getText().toString())){
 
                         Toast toast =
@@ -162,8 +180,9 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
 
                         toast.show();
                     }else{
+                        //si coinciden
                         String newPassword = textNewPass.getText().toString();
-
+                        //se actualizan
                         user.updatePassword(newPassword)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -177,13 +196,11 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                                         }
                                     }
                                 });
-
+                        //se vacían los campos
                         textNewPass.setText("");
                         textRepNewPass.setText("");
                     }
-
                 }
-
                 break;
 
             //botón eliminar perfil
@@ -192,6 +209,7 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                 //creamos el dialog con el que pdiremos la confirmacion del usuario
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+                //se requiere la confirmacion
                 builder.setMessage("Se borrará el perfil actual. Esta acción no se puede deshacer ¿Está de acuerdo?")
                         .setPositiveButton("Eliminar perfil",  new DialogInterface.OnClickListener() {
                             @Override
@@ -238,18 +256,13 @@ public class PerfilUsuario extends AppCompatActivity implements View.OnClickList
                             }
                         })
                         .show();
-
                 break;
 
             //botón atrás
             case R.id.imageBack:
-
                 finish();
-
                 break;
-
         }
-
     }
 
     /**
