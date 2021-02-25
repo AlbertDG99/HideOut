@@ -43,100 +43,98 @@ import java.util.Date;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+/**
+ * Clase crear reto en la que insertaremos una imagen, una pista y enviaremos a firebase los datos
+ */
 public class CrearReto extends AppCompatActivity implements View.OnClickListener {
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    double latitud;
-    double longitud;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
-    private String currentPhotoPath;
-    private LocationTrack locationTrack;
-    private String urlImagen;
-    private EditText eTPista;
-    private Reto reto;
+    static final int REQUEST_IMAGE_CAPTURE = 1; //Petición de permisos de la imagen
+    double latitud; //Latitud del usuario
+    double longitud; //Longitud del usuario
+    private FirebaseAuth mAuth; //Autentificación del usuario
+    private FirebaseUser user; //Usuario obtenido de firebase
+    private FirebaseStorage storage; //Referencia al contenedor de aerchivos de firebase
+    private StorageReference storageRef; //Referencia a la base de datos de firebase
+    private String currentPhotoPath; //Ruta de la imagen creada
+    private LocationTrack locationTrack; //Clase locationTrack que muestra el geoposicionamiento del usuario
+    private String urlImagen; //URL de la imagen subida a firestorage
+    private EditText eTPista; //EditText de la pista del reto
+    private Reto reto; //Objeto reto a subir a firebase
 
+    /**
+     * Metodo que se ejecuta al lanzar el activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_reto);
+        setContentView(R.layout.activity_crear_reto); //Layout asignado a la clase
 
         //el juego está pensado para pantalla vertical, así que forzamos dicha posicion
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance(); //Obtiene la instandcia de la base de datos previamente asignada
         //obtenemos el usuario
         user = mAuth.getCurrentUser();
-        storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com");
+        storage = FirebaseStorage.getInstance("gs://hideout-d08d6.appspot.com"); //Enlace a la base de datos de firebase
 
-        storageRef = storage.getReference();
+        storageRef = storage.getReference(); //Obtenemos la referencia a la base de datos
 
+        //Pide acceso a la geolocalización en caso de que no se haya asignado antes
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
 
+        //Asigna los elementos a los del layout y crea los listener
         eTPista = findViewById(R.id.eTPista);
-
-
         findViewById(R.id.bSubirFotoReto).setOnClickListener(this);
         findViewById(R.id.imageBack).setOnClickListener(this);
         findViewById(R.id.bCrearReto).setOnClickListener(this);
 
-        /*
-        StorageReference gsReference = storage.getReferenceFromUrl("gs://hideout-d08d6.appspot.com/imagenes/JPEG_20210214_213750_5124400265805042627.jpg");
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                ImageView img = findViewById(R.id.image);
-                img.setImageBitmap(bmp);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });*/
-
     }
 
+    /**
+     * Metodo que se ejecuta al clickar en los distintos elementos
+     * @param v Elemento pulsado
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.bSubirFotoReto:
+            case R.id.bSubirFotoReto: //Botón que abre el intent de la camara
 
                 dispatchTakePictureIntent();
                 break;
 
             //botón atrás
-            case R.id.imageBack:
+            case R.id.imageBack: //Botón atrás
 
                 finish();
 
                 break;
 
-            case R.id.bCrearReto:
+            case R.id.bCrearReto: //Botón que crea el reto insertandolo en bd
 
-                if (validar()) {
+                if (validar()) { //Si cumple los requisitos intentará subir a firebase el reto
                     try {
                         reto = new Reto();
-                        reto.setIdUsu(user.getUid());
-                        reto.setNomUsu(user.getDisplayName());
-                        reto.setPista(eTPista.getText().toString());
+                        reto.setIdUsu(user.getUid()); //ID del usuario
+                        reto.setNomUsu(user.getDisplayName()); //Nombre del usuario
+                        reto.setPista(eTPista.getText().toString()); //Pista del reto
+                        //Posicion actual del reto
                         reto.setLatitud(latitud);
                         reto.setLongitud(longitud);
-                        reto.setImagen(currentPhotoPath);
-                        uploadImage();
+
+                        reto.setImagen(currentPhotoPath);//Ruta de la imagen creada
+                        uploadImage(); //Subimos la imagen individualmente a firestorage
                     } catch (IOException e) {
                     }
 
+                    // Muestra un mensaje indicando que se ha subido el reto correctamente
                     AlertDialog.Builder builder = new AlertDialog.Builder(CrearReto.this);
                     //informamos al usuario con un dialog del exito
                     builder.setTitle("Información");
                     builder.setMessage("¡Reto creado con éxito!");
                     builder.setCancelable(false);
+
+                    //Botónes para terminar el reto, cerrando la activity
                     builder.setPositiveButton("Aceptar",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
@@ -159,10 +157,16 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    /**
+     * Metodo que crea el archivo que se guardará en el movil a partir de la foto creada
+     * @return Archvivo creado
+     * @throws IOException
+     */
     private File createImageFile() throws IOException {
-        // Create an image file name
+        // Crea el nombre del archivo con la fecha actual
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
+        //Carpeta donde se guardará la imagen
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -170,100 +174,112 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
+        // Guarda la ruta de la imagen para que sea usada
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_TAKE_PHOTO = 1; //Pide permiso para usar la camara del movil
 
+    /**
+     * Metodo que realiza la foto y la guarda en un archivo creado
+     */
     private void dispatchTakePictureIntent() {
-
+//Pide permiso para guardar en el almacenamiento externo
         ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+        //  Se asegura de que la camara está operativa
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
+            // Crea el archivo en el que irá la foto
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = createImageFile(); //Crea el archivo y lo guarda en su ruta asignada
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 System.out.println(ex);
             }
-            // Continue only if the File was successfully created
+            // Solo si la imagen ha sido creada correctamente continua
             if (photoFile != null) {
+                //Path en la que se guarda la imagen
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.android.fileprovider",
                         photoFile);
+                //Abre el intent de la camara para guardar la foto
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
     }
 
+    /**
+     * Metodo que se ejcuta tras realizar la foto
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        //Si ha creado la foto con exito, pide la localización al usuario y la almacena en las variables
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             locationTrack = new LocationTrack(this);
             latitud = locationTrack.getLatitude();
             longitud = locationTrack.getLongitude();
 
-            setPic();
+            setPic(); //Muestra la imagen en el ImageView
         }
     }
 
-
+    /**
+     * A partir de la imagen creada, la redimensiona y la muestra en el ImageView
+     */
     private void setPic() {
         ImageView imageView = findViewById(R.id.imgReto);
-        // Get the dimensions of the View
+        // Dimensiones del marco
         int targetW = imageView.getWidth();
         int targetH = imageView.getHeight();
 
-        // Get the dimensions of the bitmap
+        // Dimensiones de la imagen
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
 
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
-        // Determine how much to scale down the image
+        // Escala la imagen
         int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
 
-        // Decode the image file into a Bitmap sized to fill the View
+        // Descomprime el bitmap para usarlo en el imageview
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-        bitmap = rotateImage(bitmap, 90);
-        imageView.setImageBitmap(bitmap);
+        bitmap = rotateImage(bitmap, 90); //Rota la imagen ya para que no salga tumbada
+        imageView.setImageBitmap(bitmap); //Muestra la imagen
     }
 
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
-
+    /**
+     * Metodo que sube la imagen al firestorage de firebase y tras ello, obtiene el link e inserta el reto en BD
+     * @throws IOException
+     */
     private void uploadImage() throws IOException {
-        Uri file = Uri.fromFile(new File(currentPhotoPath));
-        final StorageReference imgRef = storageRef.child("imagenes/" + file.getLastPathSegment());
+        Uri file = Uri.fromFile(new File(currentPhotoPath)); //Obtiene la imagen desde la ruta
+        final StorageReference imgRef = storageRef.child("imagenes/" + file.getLastPathSegment()); //Ruta de Firestorage en la que se guardará
 
-        Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(currentPhotoPath)));//
+        //Genera el bitmap desde el archivo obtenido
+        Bitmap bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(new File(currentPhotoPath)));
 
-        bmp=rotateImage(bmp,90);
+        bmp=rotateImage(bmp,90); //Rota la imagen para que no esté tumbadaa
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);//
+        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos); //Comprime la imagen para que no pese mucho.
         byte[] data = baos.toByteArray();
         UploadTask uploadTask = imgRef.putBytes(data);
 
 
-        // Register observers to listen for when the download is done or if it fails
+        // Observador que notifica cuando la subida de la foto ha finalizado
         uploadTask.addOnFailureListener(new OnFailureListener() {
+            /**
+             * Si falla no subirá nada a firebase
+             * @param exception
+             */
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
@@ -275,6 +291,10 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 toast.show();*/
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            /**
+             * Si consigue subir la imagen, obtendremos la url y seguidamente insertaremos el objeto reto
+             * @param taskSnapshot
+             */
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
@@ -288,13 +308,13 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
                 imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri downloadUrl) {
-                        urlImagen = downloadUrl.toString();
+                        urlImagen = downloadUrl.toString(); //URL DE LA IMAGEN
                         reto.setImagen(urlImagen);
+                        //Obtiene la instacia de la base de datos y lo pushea
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("Retos");
 
                         myRef.push().setValue(reto);
-                        //myRef.child(urlImagen).setValue(reto);
 
                     }
                 });
@@ -302,6 +322,10 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         });
     }
 
+    /**
+     * Metodo que valida el reto antes de subirlo
+     * @return
+     */
     private boolean validar() {
 
         //booleano de control
@@ -313,7 +337,7 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
             eTPista.setError("Este campo ha de tener entre 2 y 150 caracteres");
         }
 
-        //comprobacion de que el email es correcto
+        //Comprobacion de que el email es correcto
         if (latitud == 0 || longitud == 0) {
             todoOk = false;
             Toast toast =
@@ -336,87 +360,17 @@ public class CrearReto extends AppCompatActivity implements View.OnClickListener
         return todoOk;
     }
 
-    public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage)
-            throws IOException {
-        int MAX_HEIGHT = 1024;
-        int MAX_WIDTH = 1024;
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        InputStream imageStream = context.getContentResolver().openInputStream(selectedImage);
-        BitmapFactory.decodeStream(imageStream, null, options);
-        imageStream.close();
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        imageStream = context.getContentResolver().openInputStream(selectedImage);
-        Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
-
-        img = rotateImageIfRequired(img, selectedImage);
-        return img;
-    }
-
-    private static int calculateInSampleSize(BitmapFactory.Options options,
-                                             int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and width
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
-            // with both dimensions larger than or equal to the requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-
-            // This offers some additional logic in case the image has a strange
-            // aspect ratio. For example, a panorama may have a much larger
-            // width than height. In these cases the total pixels might still
-            // end up being too large to fit comfortably in memory, so we should
-            // be more aggressive with sample down the image (=larger inSampleSize).
-
-            final float totalPixels = width * height;
-
-            // Anything more than 2x the requested pixels we'll sample down further
-            final float totalReqPixelsCap = reqWidth * reqHeight * 2;
-
-            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
-                inSampleSize++;
-            }
-        }
-        return inSampleSize;
-    }
-
-    private static Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
-
-        ExifInterface ei = new ExifInterface(selectedImage.getPath());
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotateImage(img, 90);
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotateImage(img, 180);
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotateImage(img, 270);
-            default:
-                return img;
-        }
-    }
-
+    /**
+     * Metodo que rota la imagen los grados que le indiquemos para enderezarla
+     * @param img imagen a girar
+     * @param degree grados
+     * @return retorna la imagen girada
+     */
     private static Bitmap rotateImage(Bitmap img, int degree) {
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-        img.recycle();
+        img.recycle(); //Recicla el bitmap para que no ocupe mucha memoria
         return rotatedImg;
     }
 
